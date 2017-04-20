@@ -15,5 +15,7 @@ main = do functionPieces <- getArgs
           args <- getLine
           functionStr <- return (unwords functionPieces)
           processedArgs <- return $ listToString.encloseWithQuotes $ words args
-          result <- return (runInterpreter $ setImports ["Prelude"] >> interpret (functionStr ++ " " ++ processedArgs) (as :: [String]))
-          result >>= print
+          result <- runInterpreter $ setImports ["Prelude"] >> interpret (functionStr ++ " " ++ processedArgs) (as :: [String])
+          case result of
+            (Right res) -> print res
+            (Left err)   -> error $ show err
