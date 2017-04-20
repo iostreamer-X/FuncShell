@@ -1,6 +1,7 @@
 module Main where
 import Language.Haskell.Interpreter as I
 import System.Environment
+import Data.List.Split
 
 -- The output of the bash command is converted to a list of strings
 -- and this list needs to represented as a String to be interpreted.
@@ -12,13 +13,15 @@ import System.Environment
 -- Now all that is left is join the list, hence unwords, but we get a leading {,}
 -- hence `tail` 
 encloseWithQuotes = map (\s->",\""++s++"\"")
-listToString str = "[" ++ (tail.unwords $ str) ++ "]"
+toStringList str = "[" ++ (tail.unwords $ str) ++ "]"
+
+listToString = tail.unwords.map ("\n"++) 
 
 main = do functionPieces <- getArgs
           args <- getContents
           functionStr <- return (unwords functionPieces)
-          processedArgs <- return $ listToString.encloseWithQuotes $ words args
+          processedArgs <- return $ toStringList.encloseWithQuotes $ init $ splitOn "\n" args
           result <- runInterpreter $ setImports ["Prelude"] >> interpret (functionStr ++ " " ++ processedArgs) (as :: [String])
           case result of
-            (Right res) -> print res
+            (Right res) -> putStrLn $ listToString res
             (Left err)   -> error $ show err
