@@ -1,7 +1,5 @@
 module ArgumentParser where
 
-import Text.ParserCombinators.ReadP
-
 data Flag = P | H
             deriving Show
 
@@ -9,7 +7,7 @@ data Arguments = Arguments
      {flag :: Maybe Flag,
       parser :: Maybe String,
       function :: Maybe String
-     }
+     } | None 
      deriving Show
 
 stringToFlag :: String -> Maybe Flag
@@ -29,13 +27,13 @@ stringToFunction str
   | otherwise        = Nothing
 
 
-extractArguments :: [String]->Maybe Arguments
+extractArguments :: [String]-> Arguments
 extractArguments (args:[]) = 
   case stringToFlag args of
-    flag@(Just H) -> Just $ Arguments flag Nothing Nothing
-    Nothing       -> Just $ Arguments Nothing Nothing (stringToFunction args)
-    _             -> Nothing  
+    flag@(Just H) -> Arguments flag Nothing Nothing
+    Nothing       -> Arguments Nothing Nothing (stringToFunction args)
+    _             -> None 
 
-extractArguments (flag:parser:function:[]) =  Just $ Arguments (stringToFlag flag) (stringToParser parser) (stringToFunction function)
+extractArguments (flag:parser:function:[]) =  Arguments (stringToFlag flag) (stringToParser parser) (stringToFunction function)
 
-extractArguments _ = Nothing
+extractArguments _ = None

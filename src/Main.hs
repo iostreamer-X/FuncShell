@@ -1,27 +1,23 @@
 module Main where
-import Language.Haskell.Interpreter as I
+
+import ArgumentParser
 import System.Environment
-import Data.List.Split
 
--- The output of the bash command is converted to a list of strings
--- and this list needs to represented as a String to be interpreted.
--- To do this, each string in the list is enclosed with quotes
--- and then joined together to get string representation of list.
+showHelp = print "Help\n"
+interpret parser function = 
+  do
+    print parser
+    print function
+    print "interpreting"
 
--- The way this is achieved is each string in list is mapped to {,"str"},
--- so ["1","2"] becomes [ ",\"1\"" , ",\"2\"" ]
--- Now all that is left is join the list, hence unwords, but we get a leading {,}
--- hence `tail` 
-encloseWithQuotes = map (\s->",\""++s++"\"")
-toStringList str = "[" ++ (tail.unwords $ str) ++ "]"
+mapArgToIO :: Arguments -> IO ()	
+mapArgToIO argument = 
+  case argument of 
+    Arguments (Just H)  _  _ -> showHelp
+    Arguments  (Just P) (Just parser) (Just function) -> interpret parser function
+    Arguments Nothing Nothing (Just function) -> interpret "smh" function
+    _ -> error "Bitches be balling"
 
-listToString = tail.unwords.map ("\n"++) 
+processArguments args = mapArgToIO (extractArguments args)
 
-main = do functionPieces <- getArgs
-          args <- getContents
-          functionStr <- return (unwords functionPieces)
-          processedArgs <- return $ toStringList.encloseWithQuotes $ init $ splitOn "\n" args
-          result <- runInterpreter $ setImports ["Prelude"] >> interpret (functionStr ++ " " ++ processedArgs) (as :: [String])
-          case result of
-            (Right res) -> putStrLn $ listToString res
-            (Left err)   -> error $ show err
+main = getArgs >>= processArguments
