@@ -6,7 +6,7 @@ import System.Exit
 
 showHelp = 
   do 
-    putStrLn "\nusage    : -h To get this help message."
+    putStrLn "\nusage  : -h To get this help message."
     putStrLn "           -p <parser name> To choose your parser."
     putStrLn "           <your function> To use default parser.\n\n"
     putStrLn "examples : ls |- -p myParser \'map(\"prepend \"++)\'"
