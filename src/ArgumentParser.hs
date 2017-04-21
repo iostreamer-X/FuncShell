@@ -1,5 +1,6 @@
 module ArgumentParser where
 
+-- This application has two flags -p and -h
 data Flag = P | H
             deriving Show
 
@@ -14,20 +15,21 @@ stringToFlag :: String -> Maybe Flag
 stringToFlag str
   | str == "-p"      = Just P
   | str == "-h"      = Just H
-  | otherwise = Nothing 
+  | otherwise        = Nothing 
 
 stringToParser :: String -> Maybe String
 stringToParser str
   | length str > 0 = Just str
-  | otherwise        = Nothing
+  | otherwise      = Nothing
 
 stringToFunction :: String -> Maybe String
 stringToFunction str
   | length str > 0 = Just str
-  | otherwise        = Nothing
+  | otherwise      = Nothing
 
 
 extractArguments :: [String]-> Arguments
+--When just one argument is provided, so it's either a -h flag or the function
 extractArguments (args:[]) = 
   case stringToFlag args of
     flag@(Just H) -> Arguments flag Nothing Nothing
