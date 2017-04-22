@@ -16,4 +16,3 @@ encloseWithQuotes = map (\s->",\""++s++"\"")
 toStringList :: [String] -> String
 toStringList str = "[" ++ (tail.unwords $ str) ++ "]"
 
-listToString = tail.unwords.map ("\n"++)

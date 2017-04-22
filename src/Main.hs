@@ -4,6 +4,7 @@ import ArgumentParser
 import System.Environment
 import System.Exit
 import DefaultParser as DP
+import TableParser as TP
 
 showHelp = 
   do 
@@ -18,6 +19,7 @@ interpret parser function =
     bashInput <- getContents
     case parser of 
       "default" -> DP.run function bashInput
+      "table"   -> TP.run function bashInput
       _         -> print "oi cunt"
 
 mapArgToIO :: Arguments -> IO ()	

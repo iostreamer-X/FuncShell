@@ -6,6 +6,8 @@ import Language.Haskell.Interpreter as I
 parse :: String -> String
 parse = toStringList.encloseWithQuotes.lines
 
+listToString = tail.unwords.map ("\n"++)
+
 run functionStr processedArgs = 
   do 
     result <- runInterpreter $ setImports ["Prelude"] >> interpret (functionStr ++ " " ++ parse processedArgs) (as :: [String])
