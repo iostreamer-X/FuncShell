@@ -1,4 +1,4 @@
-module DefaultParser where
+module DefaultParser(run)  where
 
 import Transform
 import Language.Haskell.Interpreter as I
@@ -8,7 +8,7 @@ parse = toStringList.encloseWithQuotes.lines
 
 run functionStr processedArgs = 
   do 
-    result <- runInterpreter $ setImports ["Prelude"] >> interpret (functionStr ++ " " ++ processedArgs) (as :: [String])
+    result <- runInterpreter $ setImports ["Prelude"] >> interpret (functionStr ++ " " ++ parse processedArgs) (as :: [String])
     case result of 
       (Right res) -> putStrLn $ listToString res
       (Left err)   -> error $ show err

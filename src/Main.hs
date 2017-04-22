@@ -17,7 +17,7 @@ interpret parser function =
   do
     bashInput <- getContents
     case parser of 
-      "default" -> DP.run function (DP.parse bashInput)
+      "default" -> DP.run function bashInput
       _         -> print "oi cunt"
 
 mapArgToIO :: Arguments -> IO ()	
