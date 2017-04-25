@@ -5,6 +5,7 @@ import System.Environment
 import System.Exit
 import DefaultParser as DP
 import TableParser as TP
+import ExternalParser as EP
 
 showHelp = 
   do 
@@ -18,9 +19,9 @@ interpret parser function =
   do
     bashInput <- getContents
     case parser of 
-      "default" -> DP.run function bashInput
-      "table"   -> TP.run function bashInput
-      _         -> print "Coming soon!"
+      "default"     -> DP.run function bashInput
+      "table"       -> TP.run function bashInput
+      parserModule  -> EP.run parserModule function bashInput
 
 mapArgToIO :: Arguments -> IO ()
 mapArgToIO argument = 
