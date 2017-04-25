@@ -20,7 +20,7 @@ interpret parser function =
     case parser of 
       "default" -> DP.run function bashInput
       "table"   -> TP.run function bashInput
-      _         -> print "oi cunt"
+      _         -> print "Coming soon!"
 
 mapArgToIO :: Arguments -> IO ()
 mapArgToIO argument = 
