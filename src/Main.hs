@@ -22,7 +22,7 @@ interpret parser function =
       "table"   -> TP.run function bashInput
       _         -> print "oi cunt"
 
-mapArgToIO :: Arguments -> IO ()	
+mapArgToIO :: Arguments -> IO ()
 mapArgToIO argument = 
   case argument of 
     Arguments (Just H)  _  _ -> showHelp

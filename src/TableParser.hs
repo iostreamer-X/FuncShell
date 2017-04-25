@@ -3,6 +3,9 @@ module TableParser where
 import Transform
 import Text.ParserCombinators.ReadP
 import Language.Haskell.Interpreter as I
+import Data.List
+
+--- PARSING
 
 isChar = (>' ')
 
@@ -43,6 +46,9 @@ getWords' list (parsed,unparsed) = return (getPair $ unparsed) >>= getWords' (if
 getWords :: [Char] -> [[Char]]
 getWords line = getWords' [] ([],line)
 
+--- END PARSING
+
+--- TRANSFORMING
 
 mapLines :: [[Char]] -> [[[Char]]]
 mapLines = map getWords
@@ -56,13 +62,18 @@ mapBraces list = "[" ++ (tail (unwords list)) ++ "]"
 parse :: [[Char]] -> [Char]
 parse = mapBraces.mapQuotes.mapLines
 
+--- END TRANSFORMING
+
+--- EXECUTING
+
 printList (x:xs) = putStrLn x >> printList xs
 printList [] = putStrLn ""
 
-formatHeader = listToString.getWords
 
-listToString :: [[Char]] -> [Char]
-listToString = (\x-> drop 4 x).unwords.map ("    "++)
+--  Adds padding to each string from the list such that length of each string after padding is same.
+addTrailingSpaces :: [String] -> [String]
+addTrailingSpaces strList = [s ++ (replicate (n+k) ' ') | s <- strList, let n = (length (maximum strList) - length s), let k = 6]
+
 
 run :: [Char] -> String -> IO ()
 run functionStr processedArgs =
@@ -72,24 +83,12 @@ run functionStr processedArgs =
     unparsed <- return (tail splits)
     result <- runInterpreter $ setImports ["Prelude"] >> interpret (functionStr ++ " " ++ parse unparsed) (as :: [[String]])
     case result of
-      (Right res) -> (putStrLn $ formatHeader header) >> printList (map listToString res)
+      (Right res) -> 
+        do
+          outputMatrix <- return $ transpose $ (getWords header) : res
+          paddedMatrix <- return $ map addTrailingSpaces outputMatrix
+          output <- return $ map unwords $ transpose paddedMatrix
+          printList output
       (Left err)   -> error $ show err
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+--- END EXECUTING
