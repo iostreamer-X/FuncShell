@@ -67,7 +67,7 @@ parse = mapBraces.mapQuotes.mapLines
 --- EXECUTING
 
 printList (x:xs) = putStrLn x >> printList xs
-printList [] = putStrLn ""
+printList [] = return ()
 
 
 --  Adds padding to each string from the list such that length of each string after padding is same.
