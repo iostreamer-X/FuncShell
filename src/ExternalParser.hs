@@ -1,11 +1,11 @@
 module ExternalParser where
 
-import Transform 
 import Language.Haskell.Interpreter as I
 
-run parser functionStr args = 
-  do 
-    result <- runInterpreter $ setImports ["Prelude",parser] >> interpret ("run " ++ (show functionStr) ++ " " ++ (show args) ++ "") (as :: IO ())
-    case result of
-      (Right action) -> action
-      (Left err)   -> error $ show err
+run :: String -> String -> String -> IO ()
+run package functionStr args =
+  do
+    externalRunMaybe <- runInterpreter $ setImports ["Prelude",package] >> interpret "run" (as :: ([Char] -> String -> IO ()))
+    case externalRunMaybe of 
+      (Right externalRun) -> externalRun functionStr args
+      (Left err) -> error $ show err 
