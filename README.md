@@ -1,7 +1,7 @@
 # FuncShell
 Pimp your shell by making it functional through Haskell! (An update to [Awkward](https://github.com/iostreamer-X/Awkward))
 
-![](/tty.gif)
+![](/fsh.gif)
 
 ## What is it?
 This program is an alternative to 'awk' or at least tries to be, and lets you perform
@@ -77,6 +77,7 @@ Whereas, the `ps` command outputs a table, hence you must specify the table pars
 
 The parsers mentioned above are built-in. You can also download and install external parsers. To do that you'd need `cabal`.
 Once installed, `cabal update && cabal install fsh-csv` will install the csv parser.
+
 To use it, do `echo "a,b,c\n1,2,3" |] -p FSH_CSV 'myHaskellFunction'`
 
 # Plugins
