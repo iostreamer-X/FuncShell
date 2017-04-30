@@ -49,7 +49,7 @@ wget "https://github.com/iostreamer-X/FuncShell/blob/master/fsh?raw=true" -O fsh
 You might need to install `libgmp-dev` for this to work.
 
 ## Usage
-After installing, you can use this program through `fsh`. I aliased it as '[',
+After installing, you can use this program through `fsh`. I aliased it as ']',
 so my usages look like this.
 
 ```bash
@@ -85,7 +85,7 @@ To use it, do `echo "a,b,c\n1,2,3" |] -p FSH_CSV 'myHaskellFunction'`
 Making plugins/external parsers is really easy and involves very little fuss. All you need to do is:
 
 - Make a library project(Using cabal or something else if you want).
-- Build a function named `run` with type signature `run :: [Char] -> String -> IO ()`. The first argument is the function, and the last is command output
+- Build a function named `run` with type signature `run :: [Char] -> String -> IO ()`. The first argument is the function, and the second is command output
 - Publish to hackage
 - Rejoice!
 
