@@ -29,7 +29,7 @@ getPair line =
     parsedPair [] = ("","")
 
 {-
- - When we run getPair on a string, we get a pair of strings.
+ - When we run getPair on a string, we get a pair of strings. (:/)
  - The first half is parsed, the second half failed our parser.
  - The second half failed because it had leading space, so if we run getPair on
  - the unparsed string, it will ultimately be parsed.
