@@ -9,11 +9,11 @@ import ExternalParser as EP
 
 showHelp = 
   do 
-    putStrLn "\nusage  : -h To get this help message."
+    putStrLn "\nusage    : -h To get this help message."
     putStrLn "           -p <parser name> To choose your parser."
     putStrLn "           <your function> To use default parser.\n\n"
-    putStrLn "examples : ls |- -p myParser \'map(\"prepend \"++)\'"
-    putStrLn "           ls |- \'map(++\"append \")\'"
+    putStrLn "examples : ps |fsh -p table \'filter (\\(pid:_)-> read pid > 9000)\'"
+    putStrLn "           ls |fsh \'map(++\"append \")\'"
 
 interpret parser function = 
   do
