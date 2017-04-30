@@ -8,7 +8,7 @@ parse = toStringList.encloseWithQuotes.lines
 
 listToString = tail.unwords.map ("\n"++)
 
-run :: String -> [String] -> IO ()
+run :: String -> String -> IO ()
 run functionStr processedArgs = 
   do 
     result <- runInterpreter $ setImports ["Prelude"] >> interpret (functionStr ++ " " ++ parse processedArgs) (as :: [String])
