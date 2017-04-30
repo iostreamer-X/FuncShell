@@ -1,7 +1,7 @@
 # FuncShell
 Pimp your shell by making it functional through Haskell! (An update to [Awkward](https://github.com/iostreamer-X/Awkward))
 
-![](/fsh.gif)
+![](/tty.gif)
 
 ## What is it?
 This program is an alternative to 'awk' or at least tries to be, and lets you perform
