@@ -1,6 +1,8 @@
 # FuncShell
 Pimp your shell by making it functional through Haskell! (An update to [Awkward](https://github.com/iostreamer-X/Awkward))
 
+![](/fsh.gif)
+
 ## What is it?
 This program is an alternative to 'awk' or at least tries to be, and lets you perform
 'awk' like operations through Haskell. So, if you know basic Haskell syntax, you are already set.
@@ -42,7 +44,7 @@ over this data structure. The headers are handled appropriately.
 ## Installing
 
 ```bash
-    wget "https://github.com/iostreamer-X/FuncShell/blob/master/fsh?raw=true" -O fsh && sudo chmod +x fsh && sudo mv fsh /usr/local/bin
+wget "https://github.com/iostreamer-X/FuncShell/blob/master/fsh?raw=true" -O fsh && sudo chmod +x fsh && sudo mv fsh /usr/local/bin
 ```
 You might need to install `libgmp-dev` for this to work.
 
@@ -51,7 +53,7 @@ After installing, you can use this program through `fsh`. I aliased it as '[',
 so my usages look like this.
 
 ```bash
-  la |] -p table 'filter (\(_:_:_:_:_:month:_) -> month == "Oct")'
+la |] -p table 'filter (\(_:_:_:_:_:month:_) -> month == "Oct")'
 ```
 
 The program expects the input to be received through pipes, always.
