@@ -1,5 +1,5 @@
 # FuncShell
-Pimp your shell by making it functional through Haskell! (An update to [Awkward](https://github.com/iostreamer-X/Awkward))
+Improve your shell by making it functional through Haskell! (An update to [Awkward](https://github.com/iostreamer-X/Awkward))
 
 ![](/fsh.gif)
 
