@@ -85,10 +85,13 @@ run functionStr processedArgs =
     case result of
       (Right res) -> 
         do
-          outputMatrix <- return $ transpose $ (if length (getWords header) == length (head res) then getWords header else []) : res
-          paddedMatrix <- return $ map addTrailingSpaces outputMatrix
-          output <- return $ map unwords $ transpose paddedMatrix
-          printList output
+          case res of
+            [] -> putStrLn header
+	    _  -> do
+                    outputMatrix <- return $ transpose $ (if length (getWords header) == length (head res) then getWords header else []) : res
+                    paddedMatrix <- return $ map addTrailingSpaces outputMatrix
+                    output <- return $ map unwords $ transpose paddedMatrix
+                    printList output
       (Left err)   -> error $ show err
 
 --- END EXECUTING
