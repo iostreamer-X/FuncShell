@@ -44,7 +44,7 @@ over this data structure. The headers are handled appropriately.
 ## Installing
 
 ```bash
-wget "https://github.com/iostreamer-X/FuncShell/blob/master/fsh?raw=true" -O fsh && sudo chmod +x fsh && sudo mv fsh /usr/local/bin
+wget "https://github.com/iostreamer-X/FuncShell/releases/download/0.1.0.1/fsh" -O fsh && sudo chmod +x fsh && sudo mv fsh /usr/local/bin
 ```
 You might need to install `libgmp-dev` for this to work.
 
