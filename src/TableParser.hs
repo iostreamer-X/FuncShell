@@ -9,11 +9,11 @@ import Data.List
 
 isChar = (>' ')
 
-charParser :: ReadP [Char]
+charParser :: ReadP String
 charParser = many1 (satisfy isChar)
 
 -- This parses characters till a space is encountered
-getParsed :: ReadS [Char]
+getParsed :: ReadS String
 getParsed = readP_to_S charParser
 
 -- Leading space needs to be removed or else our parser will output []
@@ -21,7 +21,7 @@ removeLeadingSpace (' ':xs) = removeLeadingSpace xs
 removeLeadingSpace str = str
 
 -- Only the last element is of interest, rest are incomplete
-getPair :: [Char] -> ([Char], [Char])
+getPair :: String -> (String, String)
 getPair line =
   parsedPair $ getParsed.removeLeadingSpace $ line
   where
@@ -39,27 +39,27 @@ getPair line =
  - We do this till unparsed is [] ie empty and then we return the list of parsed words.
  -}
 
-getWords' :: [[Char]] -> ([Char], [Char]) -> [[Char]]
+getWords' :: [String] -> (String, String) -> [String]
 getWords' list (parsed,[]) = list++[parsed]
 getWords' list (parsed,unparsed) = return (getPair $ unparsed) >>= getWords' (if length parsed > 0 then (list++[parsed]) else [])
 
-getWords :: [Char] -> [[Char]]
+getWords :: String -> [String]
 getWords line = getWords' [] ([],line)
 
 --- END PARSING
 
 --- TRANSFORMING
 
-mapLines :: [[Char]] -> [[[Char]]]
+mapLines :: [String] -> [[String]]
 mapLines = map getWords
 
-mapQuotes :: [[String]] -> [[Char]]
+mapQuotes :: [[String]] -> [String]
 mapQuotes = map ((\str->","++str).toStringList.encloseWithQuotes)
 
-mapBraces :: [String] -> [Char]
+mapBraces :: [String] -> String
 mapBraces list = "[" ++ (tail (unwords list)) ++ "]"
 
-parse :: [[Char]] -> [Char]
+parse :: [String] -> String
 parse = mapBraces.mapQuotes.mapLines
 
 --- END TRANSFORMING
@@ -75,7 +75,7 @@ addTrailingSpaces :: [String] -> [String]
 addTrailingSpaces strList = [s ++ (replicate (n+k) ' ') | s <- strList, let n = (length (maximum strList) - length s), let k = 6]
 
 
-run :: [Char] -> String -> IO ()
+run :: String -> String -> IO ()
 run functionStr processedArgs =
   do
     splits <- return (lines processedArgs)
