@@ -9,11 +9,11 @@ import Data.List
 
 isChar = (>' ')
 
-charParser :: ReadP [Char]
+charParser :: ReadP String
 charParser = many1 (satisfy isChar)
 
 -- This parses characters till a space is encountered
-getParsed :: ReadS [Char]
+getParsed :: ReadS String
 getParsed = readP_to_S charParser
 
 -- Leading space needs to be removed or else our parser will output []
@@ -21,8 +21,8 @@ removeLeadingSpace (' ':xs) = removeLeadingSpace xs
 removeLeadingSpace str = str
 
 -- Only the last element is of interest, rest are incomplete
-getPair :: [Char] -> ([Char], [Char])
-getPair line = 
+getPair :: String -> (String, String)
+getPair line =
   parsedPair $ getParsed.removeLeadingSpace $ line
   where
     parsedPair list@(x:xs) = last list
@@ -39,28 +39,35 @@ getPair line =
  - We do this till unparsed is [] ie empty and then we return the list of parsed words.
  -}
 
-getWords' :: [[Char]] -> ([Char], [Char]) -> [[Char]]
+getWords' :: [String] -> (String, String) -> [String]
 getWords' list (parsed,[]) = list++[parsed]
 getWords' list (parsed,unparsed) = return (getPair $ unparsed) >>= getWords' (if length parsed > 0 then (list++[parsed]) else [])
 
-getWords :: [Char] -> [[Char]]
+getWords :: String -> [String]
 getWords line = getWords' [] ([],line)
+
+
+escapeChar :: Char -> String
+escapeChar '\\' = "\\\\"
+escapeChar c   = [c]
 
 --- END PARSING
 
 --- TRANSFORMING
+mapEscape :: [String] -> [String]
+mapEscape = map (>>= escapeChar)
 
-mapLines :: [[Char]] -> [[[Char]]]
+mapLines :: [String] -> [[String]]
 mapLines = map getWords
 
-mapQuotes :: [[String]] -> [[Char]]
+mapQuotes :: [[String]] -> [String]
 mapQuotes = map ((\str->","++str).toStringList.encloseWithQuotes)
 
-mapBraces :: [String] -> [Char]
+mapBraces :: [String] -> String
 mapBraces list = "[" ++ (tail (unwords list)) ++ "]"
 
-parse :: [[Char]] -> [Char]
-parse = mapBraces.mapQuotes.mapLines
+parse :: [String] -> String
+parse = mapBraces.mapQuotes.mapLines.mapEscape
 
 --- END TRANSFORMING
 
@@ -75,7 +82,7 @@ addTrailingSpaces :: [String] -> [String]
 addTrailingSpaces strList = [s ++ (replicate (n+k) ' ') | s <- strList, let n = (length (maximum strList) - length s), let k = 6]
 
 
-run :: [Char] -> String -> IO ()
+run :: String -> String -> IO ()
 run functionStr processedArgs =
   do
     splits <- return (lines processedArgs)
@@ -83,15 +90,13 @@ run functionStr processedArgs =
     unparsed <- return (tail splits)
     result <- runInterpreter $ setImports ["Prelude"] >> interpret (functionStr ++ " " ++ parse unparsed) (as :: [[String]])
     case result of
-      (Right res) -> 
+      (Left err)  -> error $ show err
+      (Right [])  -> putStrLn header
+      (Right res) ->
         do
-          case res of
-            [] -> putStrLn header
-	    _  -> do
-                    outputMatrix <- return $ transpose $ (if length (getWords header) == length (head res) then getWords header else []) : res
-                    paddedMatrix <- return $ map addTrailingSpaces outputMatrix
-                    output <- return $ map unwords $ transpose paddedMatrix
-                    printList output
-      (Left err)   -> error $ show err
+          outputMatrix <- return $ transpose $ (if length (getWords header) == length (head res) then getWords header else []) : res
+          paddedMatrix <- return $ map addTrailingSpaces outputMatrix
+          output <- return $ map unwords $ transpose paddedMatrix
+          printList output
 
 --- END EXECUTING
