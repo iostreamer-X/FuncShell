@@ -22,7 +22,7 @@ removeLeadingSpace str = str
 
 -- Only the last element is of interest, rest are incomplete
 getPair :: [Char] -> ([Char], [Char])
-getPair line = 
+getPair line =
   parsedPair $ getParsed.removeLeadingSpace $ line
   where
     parsedPair list@(x:xs) = last list
@@ -83,15 +83,13 @@ run functionStr processedArgs =
     unparsed <- return (tail splits)
     result <- runInterpreter $ setImports ["Prelude"] >> interpret (functionStr ++ " " ++ parse unparsed) (as :: [[String]])
     case result of
-      (Right res) -> 
+      (Right [])  -> putStrLn header
+      (Right res) ->
         do
-          case res of
-            [] -> putStrLn header
-	    _  -> do
-                    outputMatrix <- return $ transpose $ (if length (getWords header) == length (head res) then getWords header else []) : res
-                    paddedMatrix <- return $ map addTrailingSpaces outputMatrix
-                    output <- return $ map unwords $ transpose paddedMatrix
-                    printList output
-      (Left err)   -> error $ show err
+          outputMatrix <- return $ transpose $ (if length (getWords header) == length (head res) then getWords header else []) : res
+          paddedMatrix <- return $ map addTrailingSpaces outputMatrix
+          output <- return $ map unwords $ transpose paddedMatrix
+          printList output
+      (Left err)  -> error $ show err
 
 --- END EXECUTING
