@@ -46,9 +46,16 @@ getWords' list (parsed,unparsed) = return (getPair $ unparsed) >>= getWords' (if
 getWords :: String -> [String]
 getWords line = getWords' [] ([],line)
 
+
+escapeChar :: Char -> String
+escapeChar '\\' = "\\\\"
+escapeChar c   = [c]
+
 --- END PARSING
 
 --- TRANSFORMING
+mapEscape :: [String] -> [String]
+mapEscape = map (>>= escapeChar)
 
 mapLines :: [String] -> [[String]]
 mapLines = map getWords
@@ -60,7 +67,7 @@ mapBraces :: [String] -> String
 mapBraces list = "[" ++ (tail (unwords list)) ++ "]"
 
 parse :: [String] -> String
-parse = mapBraces.mapQuotes.mapLines
+parse = mapBraces.mapQuotes.mapLines.mapEscape
 
 --- END TRANSFORMING
 
@@ -83,6 +90,7 @@ run functionStr processedArgs =
     unparsed <- return (tail splits)
     result <- runInterpreter $ setImports ["Prelude"] >> interpret (functionStr ++ " " ++ parse unparsed) (as :: [[String]])
     case result of
+      (Left err)  -> error $ show err
       (Right [])  -> putStrLn header
       (Right res) ->
         do
@@ -90,6 +98,5 @@ run functionStr processedArgs =
           paddedMatrix <- return $ map addTrailingSpaces outputMatrix
           output <- return $ map unwords $ transpose paddedMatrix
           printList output
-      (Left err)  -> error $ show err
 
 --- END EXECUTING
