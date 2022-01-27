@@ -1,18 +1,23 @@
-module DefaultParser(run)  where
+module DefaultParser(run, runGeneric)  where
 
 import Transform
-import Language.Haskell.Interpreter as I
+import qualified Language.Haskell.Interpreter as I
+import Data.Data (Typeable)
+import Data.List (uncons)
 
-parse :: String -> String
-parse = toStringList.encloseWithQuotes.lines
+-- Interpret functionStr and apply the result on stdinStr. 
+runGeneric :: Typeable t => (t -> String -> String) -> String -> String -> IO ()
+runGeneric applyOnStr functionStr stdinStr = do 
+  result <- I.runInterpreter $ I.setImports ["Prelude"] >> I.interpret functionStr I.infer
+  case result of
+    (Right res) -> putStr . applyOnStr res $ stdinStr
+    (Left err)   -> error $ show err
 
-listToString = tail.unwords.map ("\n"++)
+strAsLines :: ([String] -> [String]) -> String -> String
+strAsLines f = unlines . f . lines
 
-run :: String -> String -> IO ()
-run functionStr processedArgs = 
-  do 
-    result <- runInterpreter $ setImports ["Prelude"] >> interpret (functionStr ++ " " ++ parse processedArgs) (as :: [String])
-    case result of 
-      (Right res) -> putStrLn $ listToString res
-      (Left err)   -> error $ show err
+runDefault :: String -> String -> IO ()
+runDefault = runGeneric strAsLines
 
+-- Interpret functionStr as function :: [String] -> [String] and apply it stdinStr.
+run = runDefault
